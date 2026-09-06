@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ubuntu · Yönetim</title>
+<style>
+:root{--bg:#081018;--panel:#101a24;--text:#edf2f4;--muted:#98a7b4;--line:#ffffff18;--gold:#d7b777;--danger:#ef9a9a;--ok:#9bd4b2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:34px 20px}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:25px}.brand{letter-spacing:.24em;font-weight:800}h1{font-size:36px;margin:5px 0}h2{margin-top:0}.muted{color:var(--muted);line-height:1.7}.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:22px;margin:15px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{display:block;color:var(--muted);font-size:13px;margin:0 0 6px}input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#071018;color:var(--text);font:inherit}textarea{min-height:110px;resize:vertical}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:1px solid var(--line);background:#ffffff08;color:var(--text);border-radius:10px;padding:10px 14px;cursor:pointer}button.primary{background:var(--gold);color:#16130e;font-weight:700}.danger{color:var(--danger)}.ok{color:var(--ok)}.hidden{display:none}.status{margin:10px 0;color:var(--muted)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}small{color:var(--gold)}@media(max-width:760px){.grid{grid-template-columns:1fr}.full{grid-column:auto}table{display:block;overflow:auto}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div><div class="brand">UBUNTU</div><div class="muted">Özel yönetim alanı</div></div><button id="logout" class="hidden">Çıkış</button></div>
+<section id="login" class="panel"><h1>Yönetim</h1><p class="muted">Bu alan yalnızca yetkili Ubuntu hesabı için kullanılmalıdır.</p><form id="loginForm"><div class="grid"><div><label>E-posta</label><input id="email" type="email" autocomplete="username" required></div><div><label>Şifre</label><input id="password" type="password" autocomplete="current-password" required></div></div><div class="actions"><button class="primary" type="submit">Giriş yap</button></div></form><div id="loginStatus" class="status"></div></section>
+<section id="app" class="hidden">
+<div class="panel"><div class="top"><div><h2>Ubuntu Seçkisi</h2><div id="who" class="muted"></div></div><button id="newBtn">Yeni soru</button></div><div id="appStatus" class="status"></div><div id="list"></div></div>
+<div id="editor" class="panel hidden"><h2 id="formTitle">Yeni soru</h2><form id="qForm"><input id="qid" type="hidden"><div class="grid">
+<div><label>Ders</label><input id="subject" required></div><div><label>Konu</label><input id="topic" required></div>
+<div><label>Seviye</label><input id="level" placeholder="TYT / AYT / Lise…" required></div><div><label>Başlık</label><input id="title" required></div>
+<div class="full"><label>Kaynak</label><input id="source" placeholder="Kitap / yazar / bağlantı / kendi üretimin…"></div>
+<div class="full"><label>Kısa özet</label><textarea id="summary"></textarea></div>
+<div class="full"><label>Temel fikir</label><textarea id="coreIdea"></textarea></div>
+<div class="full"><label>Temel soru</label><textarea id="basic"></textarea></div>
+<div class="full"><label>Bir seviye üstü</label><textarea id="advanced"></textarea></div>
+<div class="full"><label>Yaklaşım</label><textarea id="approach"></textarea></div>
+<div class="full"><label>Çözüm</label><textarea id="solution"></textarea></div>
+<div><label>Durum</label><select id="published"><option value="false">Taslak</option><option value="true">Yayınla</option></select></div>
+</div><div class="actions"><button class="primary" type="submit">Kaydet</button><button type="button" id="cancelBtn">İptal</button></div><div id="formStatus" class="status"></div></form></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+const url='https://yxsolveeaihjnakvoymfe.supabase.co';
+let key=localStorage.getItem('ubuntu_publishable_key')||'';
+if(!key){key=prompt('Ubuntu Supabase Publishable Key\n\nBu değer secret/service_role key olmamalıdır. Publishable key ile devam et.'); if(key)localStorage.setItem('ubuntu_publishable_key',key.trim());}
+if(!key){document.getElementById('loginStatus').textContent='Publishable key girilmeden panel başlatılamaz.';return;}
+const supabase=window.supabase.createClient(url,key);
+const $=id=>document.getElementById(id); let rows=[];
+function status(el,msg,cls){el.className='status '+(cls||'');el.textContent=msg||''}
+async function requireAdmin(){const {data:{user}}=await supabase.auth.getUser();if(!user)return false;const {data,error}=await supabase.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();if(error||!data){await supabase.auth.signOut();status($('loginStatus'),'Bu hesap Ubuntu yöneticisi değil.','danger');return false;}return true}
+function showApp(user){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('who').textContent=user.email||'';load();}
+async function load(){status($('appStatus'),'Sorular yükleniyor…');const {data,error}=await supabase.from('questions').select('*').order('created_at',{ascending:false});if(error){status($('appStatus'),'Sorular yüklenemedi. '+error.message,'danger');return;}rows=data||[];renderList();status($('appStatus'),rows.length+' kayıt');}
+function renderList(){const host=$('list');if(!rows.length){host.innerHTML='<p class="muted">Henüz soru yok.</p>';return;}host.innerHTML='<table><thead><tr><th>Başlık</th><th>Ders / Konu</th><th>Seviye</th><th>Durum</th><th></th></tr></thead><tbody>'+rows.map(r=>`<tr><td><b>${esc(r.title)}</b></td><td>${esc(r.subject)} / ${esc(r.topic)}</td><td>${esc(r.level)}</td><td>${r.published?'<span class="ok">Yayında</span>':'Taslak'}</td><td><button data-edit="${r.id}">Düzenle</button> <button class="danger" data-del="${r.id}">Sil</button></td></tr>`).join('')+'</tbody></table>';host.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(Number(b.dataset.edit)));host.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del)));}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openEditor(r){$('editor').classList.remove('hidden');$('formTitle').textContent=r?'Soruyu düzenle':'Yeni soru';$('qid').value=r?.id||'';$('subject').value=r?.subject||'';$('topic').value=r?.topic||'';$('level').value=r?.level||'';$('title').value=r?.title||'';$('source').value=r?.source||'';$('summary').value=r?.summary||'';$('coreIdea').value=r?.core_idea||'';$('basic').value=r?.basic_question||'';$('advanced').value=r?.advanced_question||'';$('approach').value=r?.approach||'';$('solution').value=r?.solution||'';$('published').value=String(!!r?.published);status($('formStatus'),'');window.scrollTo({top:$('editor').offsetTop,behavior:'smooth'});}
+function edit(id){openEditor(rows.find(r=>r.id===id)||null)}
+$('newBtn').onclick=()=>openEditor(null);$('cancelBtn').onclick=()=>{$('editor').classList.add('hidden')};
+$('qForm').onsubmit=async e=>{e.preventDefault();const id=$('qid').value;const payload={subject:$('subject').value.trim(),topic:$('topic').value.trim(),level:$('level').value.trim(),title:$('title').value.trim(),source:$('source').value.trim()||null,summary:$('summary').value.trim()||null,core_idea:$('coreIdea').value.trim()||null,basic_question:$('basic').value.trim()||null,advanced_question:$('advanced').value.trim()||null,approach:$('approach').value.trim()||null,solution:$('solution').value.trim()||null,published:$('published').value==='true'};status($('formStatus'),'Kaydediliyor…');let res=id?await supabase.from('questions').update(payload).eq('id',Number(id)):await supabase.from('questions').insert(payload);if(res.error){status($('formStatus'),res.error.message,'danger');return;}status($('formStatus'),'Kaydedildi.','ok');$('editor').classList.add('hidden');load();};
+async function del(id){if(!confirm('Bu soruyu silmek istiyor musun?'))return;const {error}=await supabase.from('questions').delete().eq('id',id);if(error){status($('appStatus'),error.message,'danger');return;}load();}
+$('loginForm').onsubmit=async e=>{e.preventDefault();status($('loginStatus'),'Giriş yapılıyor…');const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){status($('loginStatus'),'Giriş başarısız. '+error.message,'danger');return;}if(!(await requireAdmin()))return;showApp(data.user);};
+$('logout').onclick=async()=>{await supabase.auth.signOut();location.reload()};
+(async()=>{const ok=await requireAdmin();if(ok){const {data:{user}}=await supabase.auth.getUser();showApp(user);}})();
+})();
+</script>
+</body></html>
