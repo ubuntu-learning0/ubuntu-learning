@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ubuntu — Çabalayan yalnız kalmasın.</title>
+<meta name="description" content="Sorudan önce yaklaşım. Ücretsiz öğrenme ve dayanışma alanı.">
+<style>
+:root{--bg:#081018;--panel:#101a24;--text:#edf2f4;--muted:#98a7b4;--line:#ffffff18;--gold:#d7b777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;background:#081018ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:5}.nav{max-width:1050px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between}.brand{font-weight:800;letter-spacing:.25em}.links{display:flex;gap:20px;color:var(--muted);font-size:14px}
+.hero{min-height:70vh;display:grid;place-items:center;text-align:center;padding:70px 20px;background:radial-gradient(circle at 50% 15%,#d7b77715,transparent 35%)}.symbol{width:82px;height:82px;border:1px solid var(--gold);border-radius:50%;margin:auto auto 25px;position:relative}.symbol:before,.symbol:after{content:"";position:absolute;width:54px;height:1px;background:var(--gold);top:40px;left:13px}.symbol:before{transform:rotate(45deg)}.symbol:after{transform:rotate(-45deg)}
+h1{font-size:clamp(42px,8vw,72px);letter-spacing:.28em;padding-left:.28em;margin:0}.tag{font-size:21px;margin-top:12px}.lead{max-width:650px;margin:18px auto;color:var(--muted);line-height:1.8}.btn{display:inline-block;padding:12px 19px;border-radius:999px;border:1px solid var(--line);margin:4px}.primary{background:var(--gold);color:#16130e;font-weight:700}
+section{max-width:1050px;margin:auto;padding:70px 22px}.label{font-size:12px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase}.sub{color:var(--muted);line-height:1.8}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card,.box{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:23px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.q{margin:12px 0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}.q small{color:var(--gold)}.q p{color:var(--muted);line-height:1.7}.tagpill{display:inline-block;background:#ffffff0a;color:var(--muted);padding:5px 9px;border-radius:999px;font-size:12px;margin:3px}
+footer{border-top:1px solid var(--line);text-align:center;padding:30px;color:var(--muted)}
+@media(max-width:700px){.grid,.two{grid-template-columns:1fr}.links a:nth-child(n+3){display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav"><a class="brand" href="#">UBUNTU</a><div class="links"><a href="#ogren">Öğren</a><a href="#secki">Seçki</a><a href="#birlikte">Birlikte</a><a href="#hakkinda">Hakkında</a></div></div></nav>
+<header class="hero"><div><div class="symbol"></div><h1>UBUNTU</h1><div class="tag">Çabalayan yalnız kalmasın.</div><p class="lead">Soruyu ezberletmek yerine, sorunun arkasındaki düşünceyi görünür kılan ücretsiz bir öğrenme ve dayanışma alanı.</p><a class="btn primary" href="#ogren">Başla</a><a class="btn" href="#secki">Seçki</a></div></header>
+
+<section id="ogren"><div class="label">Yöntem</div><h2>Sorudan önce yaklaşım.</h2><p class="sub">Her içerik mümkün olduğunca şu sırayı izler:</p><div class="grid"><div class="card"><b>01 · Kısa özet</b><p>Ezberlenecek formülden önce konunun ne anlattığı.</p></div><div class="card"><b>02 · Temel fikir</b><p>Sorunun öğrenciden gerçekten neyi fark etmesini istediği.</p></div><div class="card"><b>03 · Seviye atla</b><p>Aynı fikrin daha üst bir soruda nasıl karşımıza çıkabileceği.</p></div></div></section>
+
+<section id="secki"><div class="label">Ubuntu Seçkisi</div><h2>Bir soruyu değil, bir düşünceyi taşı.</h2><p class="sub">İlk aşamada seçkiyi yalnızca içerik sahibi oluşturur. Sorular kaynakları belirtilerek düzenlenir.</p><div id="questions"></div></section>
+
+<section id="birlikte"><div class="label">Birlikte</div><h2>Yalnız çalışmak zorunda değilsin.</h2><div class="two"><div class="box"><h3>Soru sor.</h3><p class="sub">Takma adla bir problem, çalışma güçlüğü veya yaklaşım sorusu paylaşabilirsin.</p><p class="sub">Amaç birbirini geçmek değil; birbirinin önünü açmak.</p></div><div class="box"><h3>Gizlilik.</h3><p class="sub">Gerçek isim, okul, telefon veya başka gereksiz kişisel bilgiler istemiyoruz.</p></div></div></section>
+
+<section id="hakkinda"><div class="label">Hatırlamak</div><h2>Birileri bize bir şey verdi.</h2><p class="sub">Ubuntu'nun teşekkür alanı, bize karşılıksız emek veren insanların etkisini — izinleri doğrultusunda ve gereksiz kişisel bilgi paylaşmadan — yaşatmak için var.</p><div class="box"><h3>Mesut Alıcı</h3><p class="sub">Öğrencilerine yalnızca ders değil, zaman, dikkat ve imkân veren bir öğretmenin bıraktığı etkinin özel bir teşekkür bölümü. Yayımlama öncesi açık izin alınır.</p></div></section>
+
+<footer>UBUNTU · İnsanlık önce.</footer>
+<script>
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){const qs=JSON.parse(localStorage.getItem("ubuntu_questions_v2")||"[]"),box=document.getElementById("questions");if(!qs.length){box.innerHTML='<div class="box"><p class="sub">İlk içerikler yakında burada.</p></div>';return}
+box.innerHTML=qs.map(q=>`<article class="q"><small>${esc(q.subject)} · ${esc(q.topic)} · ${esc(q.level)}</small><h3>${esc(q.title||q.topic)}</h3><p><b>Kısa özet:</b> ${esc(q.summary)}</p><p><b>Temel fikir:</b> ${esc(q.idea)}</p><p><b>Yaklaşım:</b> ${esc(q.approach)}</p><p><b>Kaynak:</b> ${esc(q.source)}</p>${q.basic?`<p><b>Temel soru:</b> ${esc(q.basic)}</p>`:""}${q.advanced?`<p><b>Bir seviye üstü:</b> ${esc(q.advanced)}</p>`:""}</article>`).join("")}
+render();
+</script>
+</body></html>
